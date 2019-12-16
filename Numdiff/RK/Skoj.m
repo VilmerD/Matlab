@@ -1,0 +1,12 @@
+L = 1;
+N = 200;
+x = linspace(0, L, N);
+xinner = x(2:end-1);
+dx = 1/(N+1);
+T = dx^(-2)*toeplitz([-2 1 zeros(1, N-4)]);
+fzero = cos(xinner*pi/L).^2'.*sin(4*xinner*pi/L).^10';
+f = @(t,y) T*y;
+[t, y] = adaptiveRK34(f, fzero, 0, 3e-3, 1e-6);
+y = [zeros(1, length(t));y;zeros(1, length(t))];
+surf(t, x, y);
+xlabel("t"); ylabel("x");

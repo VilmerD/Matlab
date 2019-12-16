@@ -1,0 +1,29 @@
+CourseArray = [BS HN R TF MAI];
+SpecNames = ["BS" "HN" "R" "TF" "MAI"];
+Common = ["Gemensamm kurs", "Program gemensamt med"];
+
+for l = 1:length(SpecNames)
+    Spec = Specnames(l);
+    Common = [Common; Spec, "-"];
+    for k = 1:15
+        Compare = CourseArray(k,l);
+        for i = 1:length(SpecNames)
+            if i ~= l
+                for j= 1:15
+                    tCourse = CourseArray(j,i);
+                    if Compare == tCourse && Compare ~= "_"
+                        is = ismember(Common(:,1), Spec);
+                        idx = find(is) + 1;
+                        ismember(Common(idx:,1),Compare)
+                        if idx ~=0
+                            Common(
+                            
+                        else 
+                            Common = [Common; Compare, SpecNames(i)];
+                        end                       
+                    end
+                end
+            end
+        end
+    end
+end
