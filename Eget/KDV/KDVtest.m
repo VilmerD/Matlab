@@ -1,15 +1,15 @@
-d = -0.001;
+d = -0.01;
 a = 1;
-N = 700; Lx = 1;
+N = 300; Lx = 1;
 xx = linspace(0,Lx,N+1);
 xinner = xx(1:end-1);
 
-M = 20000; tend = 10e-2;
+M = 2000; tend = 10e-2;
 dt = tend/M;
 tt = 0:dt:tend;
 
 %g = @(x) 2*sin(4*pi*x/Lx).*sin(3*pi*x/Lx) + 5*exp(-10*(x-0.5).^2);   
-g = @(x) 4*cos(2*pi*x);
+g = @(x) 2*cos(2*pi*x);
 gx = g(xinner)';
 % plot(xinner,gx);
 u = [gx zeros(N,M)];

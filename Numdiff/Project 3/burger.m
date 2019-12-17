@@ -9,4 +9,4 @@ function unew = burger(uold, d, dt)
     
     I = eye(N);
     
-    unew = (I-dt*d/2*T)\(LW(uold, T, S, dt) + dt*d/2*T*uold);
+unew = (I-dt*d/2*T)\(LW(uold, T, S, dt) + dt*d/2*T*uold);
