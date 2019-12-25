@@ -1,22 +1,49 @@
 %% Initializing
 N = 100;
-xx = linspace(0,1,N+2); xinner = xx(2:end-1);
-yy = xx';                yinner = xinner';
-[X,Y] = meshgrid(xinner,yinner);
-
+xx = linspace(0,1,N);
+yy = xx';
+[X,Y] = meshgrid(xx,yy);
 %% Matrix
 s = (mod(1:(N^2-1),N)~=0);
-super = double(s);
+superRow = double(s);
 
-M = sparse(-2*diag(ones(1,N^2)) + diag(super,1) + diag(super,-1) + diag(ones(1,N^2-N),N) + diag(ones(1,N^2-N), -N));
+super = spdiags([1 superRow]', 1, N^2, N^2);
+sub = spdiags([superRow 1]', -1, N^2, N^2);
+superduper = spdiags(ones(N^2,1), N, N^2, N^2);
+suberduper = spdiags(ones(N^2,1), -N, N^2, N^2);
+diagonal = -4*speye(N^2);
+
+M = -N^2*(super + superduper + sub + suberduper + diagonal);
 %% Initial function 
-f = @(x,y) sin(3*pi*y).^2
-% Matrix
-finner = fm(:);                     % Vector
+f = @(x,y) pi^2*sin(pi*x).*sin(pi*y);
+xmesh = X(:);
 
+ymesh = Y(:);
+
+fm = f(xmesh,ymesh);
+%% Boundary values 
+alpha = [0 0 0 0]; beta = [1 0 0 -1];
+beta = beta.*(-1).^(0:3);
+z = find(abs(alpha) + abs(beta) == 0);
+alpha(z) = ones(1, length(z));
+
+westC = (mod(1:N^2,N) == 1)';
+westM = spdiags(westC, 0, N^2, N^2);
+
+northC = (1:N^2 < N+1)';
+northM = spdiags(northC, 0, N^2, N^2);
+
+eastC = (mod(1:N^2,N) == 0)';
+eastM = spdiags(eastC, 0, N^2, N^2);
+
+southC = (1:N^2 > N^2 - N)';
+southM = spdiags(southC, 0, N^2, N^2);
+
+B = 2./(alpha - N*beta); Bt = B./(2*alpha+2*N*beta);
+
+BndryF = (westC*B(1) + eastC*B(2) + northC*B(3) + southC*B(4))*N^2;
+BndryM = (westM*Bt(1) + eastM*Bt(2) + northM*Bt(3) + southM*Bt(4))*N^2;
 %% Lösning
-y = M\finner;
+y = sparse(M + BndryM)\(fm + BndryF);
 ym = reshape(y, [N,N]);
-ym = [zeros(1,N+2); zeros(N,1) ym zeros(N,1); zeros(1,N+2)];
-[X,Y] = meshgrid(xx,yy);
 mesh(X,Y,ym);
